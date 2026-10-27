@@ -1,0 +1,45 @@
+## Development Log
+
+### Milestone 1 — Rotary encoder input and value tracking
+
+**Status:** Working prototype
+
+**Objective:** Read rotary encoder movement using the Raspberry Pi Pico H and convert it into a value within the MIDI range of 0–127.
+
+**Hardware setup**
+- Raspberry Pi Pico H (RP2040)
+- Rotary encoder connected to GP16, GND and GP17
+- Development and testing through VS Code on macOS
+
+**Implementation**
+- Configured GP16 and GP17 as digital inputs with internal pull-up resistors.
+- Read both encoder signals and combined them into a two-bit state.
+- Used the previous and current states to determine the direction of rotation.
+- Used a transition lookup table to identify valid movements.
+- Maintained a running encoder count and a separate control value initialised to 64.
+- Introduced a transition accumulator to change the control value after four transitions.
+
+**Observation**
+
+During testing, one physical encoder click produced four valid transitions. Initially, each transition changed the control value, resulting in a change of approximately four units per click.
+
+**Solution**
+
+Introduced an accumulator to group four transitions into one control-value change. This reduced the observed sensitivity to approximately one value unit per physical click.
+
+**Testing**
+- Confirmed that rotation was detected in both directions.
+- Confirmed that the control value increased and decreased.
+- Confirmed that the value remained within the range 0–127.
+
+**What I learned**
+- A rotary encoder produces digital signals rather than a direct absolute position value.
+- Quadrature decoding uses the relationship between two signals to determine rotation direction.
+- A lookup table can simplify the interpretation of state transitions.
+- An accumulator can group multiple input transitions into a higher-level action.
+
+**Next steps**
+- Deepen understanding of the C implementation.
+- Investigate encoder resolution and transition handling.
+- Implement USB MIDI output.
+- Test MIDI Control Change messages in Ableton Live.
